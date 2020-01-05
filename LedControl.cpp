@@ -81,7 +81,7 @@ void LedControl::shutdown(int addr, bool b) {
         spiTransfer(addr, OP_SHUTDOWN,0);
     else
         spiTransfer(addr, OP_SHUTDOWN,1);
-}
+}*/
 
 void LedControl::setScanLimit(int addr, int limit) {
     if(addr<0 || addr>=maxDevices)
@@ -90,7 +90,7 @@ void LedControl::setScanLimit(int addr, int limit) {
         spiTransfer(addr, OP_SCANLIMIT,limit);
 }
 
-void LedControl::setIntensity(int addr, int intensity) {
+/*void LedControl::setIntensity(int addr, int intensity) {
     if(addr<0 || addr>=maxDevices)
         return;
     if(intensity>=0 && intensity<16)	
@@ -208,9 +208,9 @@ void LedControl::spiTransfer(int addr, volatile byte opcode, volatile byte data)
 void shiftOut(int pin, int clk, byte data) {
     //digitalWrite(SPI_CS, LOW);
     for(int i = 0; i < 8; i++) {
-        digitalWrite(pin, byte & 0x80);
+        digitalWrite(pin, data & 0x80);
         digitalWrite(clk, HIGH);
-        byte <<= 1;
+        data <<= 1;
         digitalWrite(clk, LOW);
     }
     //digitalWrite(SPI_CS, HIGH);
