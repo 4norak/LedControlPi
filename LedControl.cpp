@@ -202,7 +202,7 @@ void LedControl::spiTransfer(int addr, volatile byte opcode, volatile byte data)
     spidata[offset]=data;
     //Now shift out the data 
     for(int i=maxbytes;i>0;i--)
-        shiftOut(SPI_MOSI,SPI_CLK,spidata[i-1]);
+        shiftOut(SPI_MOSI,SPI_CLK,SPI_CS,spidata[i-1]);
 }    
 
 void shiftOut(int pin, int clk, int cs, byte data) {
