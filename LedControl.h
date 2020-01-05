@@ -29,6 +29,9 @@
 
 #include <wiringPi.h>
 
+typedef char byte;
+typedef char boolean;
+
 /*
  * Segments to be switched on for characters and digits on
  * 7-Segment Displays
@@ -79,7 +82,7 @@ class LedControl {
          * csPin		pin for selecting the device 
          * numDevices	maximum number of devices that can be controled
          */
-        LedControl(int dataPin, int clkPin, int csPin, int numDevices=1);
+        LedControl(int dataPin, int clkPin, /*int csPin,*/ int numDevices=1);
 
         /*
          * Gets the number of devices attached to this LedControl.
