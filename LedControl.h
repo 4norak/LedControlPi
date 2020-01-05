@@ -181,7 +181,7 @@ class LedControl {
         //void setChar(int addr, int digit, char value, boolean dp);
 };
 
-void shiftOut(int pin, int clk, byte data);
+void shiftOut(int pin, int clk, int cs, byte data);
 
 #endif	//LedControl.h
 

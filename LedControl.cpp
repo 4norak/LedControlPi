@@ -205,13 +205,13 @@ void LedControl::spiTransfer(int addr, volatile byte opcode, volatile byte data)
         shiftOut(SPI_MOSI,SPI_CLK,spidata[i-1]);
 }    
 
-void shiftOut(int pin, int clk, byte data) {
-    digitalWrite(SPI_CS, LOW);
+void shiftOut(int pin, int clk, int cs, byte data) {
+    digitalWrite(cs, LOW);
     for(int i = 0; i < 8; i++) {
         digitalWrite(pin, data & 0x80);
         digitalWrite(clk, HIGH);
         data <<= 1;
         digitalWrite(clk, LOW);
     }
-    digitalWrite(SPI_CS, HIGH);
+    digitalWrite(cs, HIGH);
 }
