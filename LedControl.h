@@ -108,7 +108,7 @@ class LedControl {
          * addr	address of the display to control
          * limit	number of digits to be displayed (1..8)
          */
-        //void setScanLimit(int addr, int limit);
+        void setScanLimit(int addr, int limit);
 
         /* 
          * Set the brightness of the display.

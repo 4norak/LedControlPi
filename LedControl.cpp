@@ -118,7 +118,7 @@ void LedControl::setLed(int addr, int row, int column, boolean state) {
     if(row<0 || row>7 || column<0 || column>7)
         return;
     offset=addr*8;
-    val=B10000000 >> column;
+    val=0b10000000 >> column;
     if(state)
         status[offset+row]=status[offset+row]|val;
     else {
