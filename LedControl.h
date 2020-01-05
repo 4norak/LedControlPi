@@ -69,7 +69,7 @@ class LedControl {
         /* The clock is signaled on this pin */
         int SPI_CLK;
         /* This one is driven LOW for chip selectzion */
-        //int SPI_CS;
+        int SPI_CS;
         /* The maximum number of devices we use */
         int maxDevices;
 

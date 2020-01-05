@@ -43,18 +43,18 @@
 #define OP_SHUTDOWN    12
 #define OP_DISPLAYTEST 15
 
-LedControl::LedControl(int dataPin, int clkPin, /*int csPin,*/ int numDevices) {
+LedControl::LedControl(int dataPin, int clkPin, int csPin, int numDevices) {
     wiringPiSetupGpio();
     SPI_MOSI=dataPin;
     SPI_CLK=clkPin;
-    //SPI_CS=csPin;
+    SPI_CS=csPin;
     if(numDevices<=0 || numDevices>8 )
         numDevices=8;
     maxDevices=numDevices;
     pinMode(SPI_MOSI,OUTPUT);
     pinMode(SPI_CLK,OUTPUT);
-    //pinMode(SPI_CS,OUTPUT);
-    //digitalWrite(SPI_CS,HIGH);
+    pinMode(SPI_CS,OUTPUT);
+    digitalWrite(SPI_CS,HIGH);
     SPI_MOSI=dataPin;
     for(int i=0;i<64;i++) 
         status[i]=0x00;
@@ -206,12 +206,12 @@ void LedControl::spiTransfer(int addr, volatile byte opcode, volatile byte data)
 }    
 
 void shiftOut(int pin, int clk, byte data) {
-    //digitalWrite(SPI_CS, LOW);
+    digitalWrite(SPI_CS, LOW);
     for(int i = 0; i < 8; i++) {
         digitalWrite(pin, data & 0x80);
         digitalWrite(clk, HIGH);
         data <<= 1;
         digitalWrite(clk, LOW);
     }
-    //digitalWrite(SPI_CS, HIGH);
+    digitalWrite(SPI_CS, HIGH);
 }
