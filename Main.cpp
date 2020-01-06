@@ -7,12 +7,10 @@ int main(void)
         for(int i=0;i<10;i++) {
             for(int j=0; j<8; j++)
                 display.setCharacter(j, i);
-            delay(800);
+            delay(980);
             for(int j=0; j<8; j++) {
-                display.shutdown(j, true);
-                delay(200);
-                display.shutdown(j, false);
                 display.clearDisplay(j);
+                delay(20);
             }
         }
 
