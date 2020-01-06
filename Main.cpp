@@ -12,7 +12,7 @@ int main(void)
                 display.shutdown(j, true);
                 delay(200);
                 display.shutdown(j, false);
-                display.clear(j);
+                display.clearDisplay(j);
         }
 
     return 0;
