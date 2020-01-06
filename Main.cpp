@@ -19,10 +19,7 @@ int main(void)
         for(char i=48;i<58;i++) {
             for(int j=0; j<8; j++)
                 display.setCharacter(j, i);
-            delay(980);
-            for(int j=0; j<8; j++)
-                display.clearDisplay(j);
-            delay(20);
+            delay(1000);
         }
 
     return 0;
