@@ -116,7 +116,7 @@ class LedControl {
          * addr		the address of the display to control
          * intensity	the brightness of the display. (0..15)
          */
-        //void setIntensity(int addr, int intensity);
+        void setIntensity(int addr, int intensity);
 
         /* 
          * Switch all Leds on the display off. 
