@@ -3,9 +3,9 @@
 int main(void)
 {
   LedControl display(10, 11, 8, 1);
-  lc.shutdown(0, false);
-  lc.setIntensity(0, 8);
-  lc.clearDisplay(0);
+  display.shutdown(0, false);
+  display.setIntensity(0, 8);
+  display.clearDisplay(0);
   
   display.setLed(0, 0, 0, 1);
 

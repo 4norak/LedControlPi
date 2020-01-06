@@ -98,7 +98,7 @@ class LedControl {
          * status	If true the device goes into power-down mode. Set to false
          *		for normal operation.
          */
-        //void shutdown(int addr, bool status);
+        void shutdown(int addr, bool status);
 
         /* 
          * Set the number of digits (or rows) to be displayed.
@@ -181,7 +181,7 @@ class LedControl {
         //void setChar(int addr, int digit, char value, boolean dp);
 };
 
-void shiftOut(int pin, int clk, int cs, byte data);
+void shiftOut(int pin, int clk, byte data);
 
 #endif	//LedControl.h
 
