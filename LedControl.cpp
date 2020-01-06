@@ -1,6 +1,6 @@
 /*
  *    LedControl.cpp - A library for controling Leds with a MAX7219/MAX7221
- *    Copyright (c) 2007 Eberhard Fahle, slightly modified and adapted to run on a Raspberry Pi by Anorak
+ *    Copyright (c) 2007 Eberhard Fahle, modified and adapted to run on a Raspberry Pi by Anorak
  * 
  *    Permission is hereby granted, free of charge, to any person
  *    obtaining a copy of this software and associated documentation
