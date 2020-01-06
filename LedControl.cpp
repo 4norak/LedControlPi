@@ -137,6 +137,13 @@ void LedControl::setColumn(int addr, int col, byte value) {
     }
 }
 
+void LedControl::setCharacter(int addr, char character) {
+    byte charMap[8] = digits[character-'0'];
+    //TODO: Check character range
+    for(int row=0; row<8; row++)
+        LedControl::setRow(addr, row, charMap[i]);
+}
+
 void LedControl::spiTransfer(int addr, volatile byte opcode, volatile byte data) {
     //Create an array with the data to shift out
     int offset=addr*2;
