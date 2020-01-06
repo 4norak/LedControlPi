@@ -1,9 +1,21 @@
 #include "LedControl.h"
+#include <signal.h>
+#include<iostream>
+
+bool shutdown = false;
+LedControl display(10, 11, 8, 8);
+
+void handleSig(int parameter) {
+    std::cout << "Signal caught" << std::endl;
+    shutdown = true;
+    display.clearUp();
+}
 
 int main(void)
 {
-    LedControl display(10, 11, 8, 8);
-    for(;;)
+    signal(SIGINT, handleSig);
+    signal(SIGTERM, handleSig);
+    while(!shutdown)
         for(int i=0;i<10;i++) {
             for(int j=0; j<8; j++)
                 display.setCharacter(j, i);

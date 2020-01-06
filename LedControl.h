@@ -60,6 +60,8 @@ class LedControl {
         void spiTransfer(int addr, byte opcode, byte data);
         /* Replacement for the Arduino-function */
         void shiftOut(byte data);
+        /*Clean up on Ctrl+C*/
+        void cleanUp();
 
         /* We keep track of the led-status for all 8 devices in this array */
         byte status[MAX_DEVICES * 8];
@@ -82,6 +84,11 @@ class LedControl {
          * numDevices	maximum number of devices that can be controled
          */
         LedControl(int dataPin, int clkPin, int csPin, int numDevices=1);
+
+        /*
+         * Delete the controller and clear up
+         */
+        ~LedControl();
 
         /*
          * Gets the number of devices attached to this LedControl.

@@ -169,3 +169,11 @@ void LedControl::shiftOut(byte data) {
         digitalWrite(SPI_CLK, LOW);
     }
 }
+
+void LedControl::cleanUp() {
+    digitalWrite(SPI_CS, HIGH);
+    digitalWrite(SPI_CLK, LOW);
+    digitalWrite(SPI_MOSI, 0);
+    digitalWrite(SPI_CLK, HIGH);
+    digitalWrite(SPI_CLK, LOW);
+}
