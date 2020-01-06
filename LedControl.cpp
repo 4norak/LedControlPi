@@ -55,7 +55,6 @@ LedControl::LedControl(int dataPin, int clkPin, int csPin, int numDevices) {
     pinMode(SPI_CLK,OUTPUT);
     pinMode(SPI_CS,OUTPUT);
     digitalWrite(SPI_CS,HIGH);
-    SPI_MOSI=dataPin;
     for(int i=0;i<64;i++) 
         status[i]=0x00;
     for(int i=0;i<maxDevices;i++) {
@@ -66,13 +65,13 @@ LedControl::LedControl(int dataPin, int clkPin, int csPin, int numDevices) {
         spiTransfer(i,OP_DECODEMODE,0);
         clearDisplay(i);
         //we go into shutdown-mode on startup
-        //shutdown(i,true);
+        shutdown(i,true);
     }
 }
 
 /*int LedControl::getDeviceCount() {
     return maxDevices;
-}
+}*/
 
 void LedControl::shutdown(int addr, bool b) {
     if(addr<0 || addr>=maxDevices)
@@ -81,7 +80,7 @@ void LedControl::shutdown(int addr, bool b) {
         spiTransfer(addr, OP_SHUTDOWN,0);
     else
         spiTransfer(addr, OP_SHUTDOWN,1);
-}*/
+}
 
 void LedControl::setScanLimit(int addr, int limit) {
     if(addr<0 || addr>=maxDevices)
@@ -90,12 +89,12 @@ void LedControl::setScanLimit(int addr, int limit) {
         spiTransfer(addr, OP_SCANLIMIT,limit);
 }
 
-/*void LedControl::setIntensity(int addr, int intensity) {
+void LedControl::setIntensity(int addr, int intensity) {
     if(addr<0 || addr>=maxDevices)
         return;
     if(intensity>=0 && intensity<16)	
         spiTransfer(addr, OP_INTENSITY,intensity);
-}*/
+}
 
 void LedControl::clearDisplay(int addr) {
     int offset;
@@ -201,17 +200,17 @@ void LedControl::spiTransfer(int addr, volatile byte opcode, volatile byte data)
     spidata[offset+1]=opcode;
     spidata[offset]=data;
     //Now shift out the data 
+    digitalWrite(SPI_CS, LOW);
     for(int i=maxbytes;i>0;i--)
-        shiftOut(SPI_MOSI,SPI_CLK,SPI_CS,spidata[i-1]);
+        shiftOut(SPI_MOSI,SPI_CLK,spidata[i-1]);
+    digitalWrite(SPI_CS, HIGH);
 }    
 
-void shiftOut(int pin, int clk, int cs, byte data) {
-    digitalWrite(cs, LOW);
+void shiftOut(int pin, int clk, byte data) {
     for(int i = 0; i < 8; i++) {
         digitalWrite(pin, data & 0x80);
         digitalWrite(clk, HIGH);
         data <<= 1;
         digitalWrite(clk, LOW);
     }
-    digitalWrite(cs, HIGH);
 }
