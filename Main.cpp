@@ -5,6 +5,10 @@ int main(void)
   LedControl display(10, 11, 8, 8);
   
   for(int i=0; i<20; i++) {
+    for(int j=0; j<8; j++)
+        display.shutdown(i, true);
+    for(int j=0; j<8; j++)
+        display.shutdown(i, true);
     display.setCharacter(0, '3');
     display.setCharacter(1, '6');
     display.setCharacter(2, '7');
