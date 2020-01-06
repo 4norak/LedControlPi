@@ -1,6 +1,6 @@
 /*
  *    LedControl.h - A library for controling Leds with a MAX7219/MAX7221
- *    Copyright (c) 2007 Eberhard Fahle
+ *    Copyright (c) 2007 Eberhard Fahle, slightly modified and adapted to run on a Raspberry Pi by Anorak
  * 
  *    Permission is hereby granted, free of charge, to any person
  *    obtaining a copy of this software and associated documentation
@@ -30,45 +30,33 @@
 #include <wiringPi.h>
 
 typedef char byte;
-typedef char boolean;
 
-/*
- * Segments to be switched on for characters and digits on
- * 7-Segment Displays
- */
-/*const static byte charTable [] PROGMEM  = {
-    B01111110,B00110000,B01101101,B01111001,B00110011,B01011011,B01011111,B01110000,
-    B01111111,B01111011,B01110111,B00011111,B00001101,B00111101,B01001111,B01000111,
-    B00000000,B00000000,B00000000,B00000000,B00000000,B00000000,B00000000,B00000000,
-    B00000000,B00000000,B00000000,B00000000,B00000000,B00000000,B00000000,B00000000,
-    B00000000,B00000000,B00000000,B00000000,B00000000,B00000000,B00000000,B00000000,
-    B00000000,B00000000,B00000000,B00000000,B10000000,B00000001,B10000000,B00000000,
-    B01111110,B00110000,B01101101,B01111001,B00110011,B01011011,B01011111,B01110000,
-    B01111111,B01111011,B00000000,B00000000,B00000000,B00000000,B00000000,B00000000,
-    B00000000,B01110111,B00011111,B00001101,B00111101,B01001111,B01000111,B00000000,
-    B00110111,B00000000,B00000000,B00000000,B00001110,B00000000,B00000000,B00000000,
-    B01100111,B00000000,B00000000,B00000000,B00000000,B00000000,B00000000,B00000000,
-    B00000000,B00000000,B00000000,B00000000,B00000000,B00000000,B00000000,B00001000,
-    B00000000,B01110111,B00011111,B00001101,B00111101,B01001111,B01000111,B00000000,
-    B00110111,B00000000,B00000000,B00000000,B00001110,B00000000,B00010101,B00011101,
-    B01100111,B00000000,B00000000,B00000000,B00000000,B00000000,B00000000,B00000000,
-    B00000000,B00000000,B00000000,B00000000,B00000000,B00000000,B00000000,B00000000
-};*/
+//the opcodes for the MAX7221 and MAX7219
+#define OP_NOOP   0
+#define OP_DECODEMODE  9
+#define OP_INTENSITY   10
+#define OP_SCANLIMIT   11
+#define OP_SHUTDOWN    12
+#define OP_DISPLAYTEST 15
+
+#define MAX_DEVICES 24
 
 class LedControl {
     private :
         /* The array for shifting the data to the devices */
-        byte spidata[16];
+        byte spidata[MAX_DEVICES * 2];
         /* Send out a single command to the device */
         void spiTransfer(int addr, byte opcode, byte data);
+        /* Replacement for the Arduino-function */
+        void shiftOut(int data_pin, int clk, byte data);
 
         /* We keep track of the led-status for all 8 devices in this array */
-        byte status[64];
+        byte status[MAX_DEVICES * 8];
         /* Data is shifted out of this pin*/
         int SPI_MOSI;
         /* The clock is signaled on this pin */
         int SPI_CLK;
-        /* This one is driven LOW for chip selectzion */
+        /* This one is driven LOW for chip selection */
         int SPI_CS;
         /* The maximum number of devices we use */
         int maxDevices;
@@ -89,7 +77,7 @@ class LedControl {
          * Returns :
          * int	the number of devices on this LedControl
          */
-        //int getDeviceCount();
+        int getDeviceCount();
 
         /* 
          * Set the shutdown (power saving) mode for the device
@@ -134,7 +122,7 @@ class LedControl {
          * state	If true the led is switched on, 
          *		if false it is switched off
          */
-        void setLed(int addr, int row, int col, boolean state);
+        void setLed(int addr, int row, int col, bool state);
 
         /* 
          * Set all 8 Led's in a row to a new state
@@ -144,7 +132,7 @@ class LedControl {
          * value	each bit set to 1 will light up the
          *		corresponding Led.
          */
-        //void setRow(int addr, int row, byte value);
+        void setRow(int addr, int row, byte value);
 
         /* 
          * Set all 8 Led's in a column to a new state
@@ -154,36 +142,8 @@ class LedControl {
          * value	each bit set to 1 will light up the
          *		corresponding Led.
          */
-        //void setColumn(int addr, int col, byte value);
-
-        /* 
-         * Display a hexadecimal digit on a 7-Segment Display
-         * Params:
-         * addr	address of the display
-         * digit	the position of the digit on the display (0..7)
-         * value	the value to be displayed. (0x00..0x0F)
-         * dp	sets the decimal point.
-         */
-        //void setDigit(int addr, int digit, byte value, boolean dp);
-
-        /* 
-         * Display a character on a 7-Segment display.
-         * There are only a few characters that make sense here :
-         *	'0','1','2','3','4','5','6','7','8','9','0',
-         *  'A','b','c','d','E','F','H','L','P',
-         *  '.','-','_',' ' 
-         * Params:
-         * addr	address of the display
-         * digit	the position of the character on the display (0..7)
-         * value	the character to be displayed. 
-         * dp	sets the decimal point.
-         */
-        //void setChar(int addr, int digit, char value, boolean dp);
+        void setColumn(int addr, int col, byte value);
 };
 
-void shiftOut(int pin, int clk, byte data);
 
 #endif	//LedControl.h
-
-
-

@@ -1,6 +1,6 @@
 /*
  *    LedControl.cpp - A library for controling Leds with a MAX7219/MAX7221
- *    Copyright (c) 2007 Eberhard Fahle
+ *    Copyright (c) 2007 Eberhard Fahle, slightly modified and adapted to run on a Raspberry Pi by Anorak
  * 
  *    Permission is hereby granted, free of charge, to any person
  *    obtaining a copy of this software and associated documentation
@@ -27,35 +27,19 @@
 
 #include "LedControl.h"
 
-//the opcodes for the MAX7221 and MAX7219
-#define OP_NOOP   0
-#define OP_DIGIT0 1
-#define OP_DIGIT1 2
-#define OP_DIGIT2 3
-#define OP_DIGIT3 4
-#define OP_DIGIT4 5
-#define OP_DIGIT5 6
-#define OP_DIGIT6 7
-#define OP_DIGIT7 8
-#define OP_DECODEMODE  9
-#define OP_INTENSITY   10
-#define OP_SCANLIMIT   11
-#define OP_SHUTDOWN    12
-#define OP_DISPLAYTEST 15
-
 LedControl::LedControl(int dataPin, int clkPin, int csPin, int numDevices) {
     wiringPiSetupGpio();
     SPI_MOSI=dataPin;
     SPI_CLK=clkPin;
     SPI_CS=csPin;
-    if(numDevices<=0 || numDevices>8 )
-        numDevices=8;
+    if(numDevices<=0 || numDevices>MAX_DEVICES)
+        numDevices=MAX_DEVICES;
     maxDevices=numDevices;
     pinMode(SPI_MOSI,OUTPUT);
     pinMode(SPI_CLK,OUTPUT);
     pinMode(SPI_CS,OUTPUT);
     digitalWrite(SPI_CS,HIGH);
-    for(int i=0;i<64;i++) 
+    for(int i=0;i<MAX_DEVICES*8;i++) 
         status[i]=0x00;
     for(int i=0;i<maxDevices;i++) {
         spiTransfer(i,OP_DISPLAYTEST,0);
@@ -63,23 +47,24 @@ LedControl::LedControl(int dataPin, int clkPin, int csPin, int numDevices) {
         setScanLimit(i,7);
         //decode is done in source
         spiTransfer(i,OP_DECODEMODE,0);
-        clearDisplay(i);
         //we go into shutdown-mode on startup
         shutdown(i,true);
+        //no, we don't
+        shutdown(i, false);
+        //prepare display
+        setIntensity(i, 8);
+        clearDisplay(i);
     }
 }
 
-/*int LedControl::getDeviceCount() {
+int LedControl::getDeviceCount() {
     return maxDevices;
-}*/
+}
 
 void LedControl::shutdown(int addr, bool b) {
     if(addr<0 || addr>=maxDevices)
         return;
-    if(b)
-        spiTransfer(addr, OP_SHUTDOWN,0);
-    else
-        spiTransfer(addr, OP_SHUTDOWN,1);
+    spiTransfer(addr, OP_SHUTDOWN,!b);
 }
 
 void LedControl::setScanLimit(int addr, int limit) {
@@ -108,7 +93,7 @@ void LedControl::clearDisplay(int addr) {
     }
 }
 
-void LedControl::setLed(int addr, int row, int column, boolean state) {
+void LedControl::setLed(int addr, int row, int column, bool state) {
     int offset;
     byte val=0x00;
 
@@ -127,7 +112,7 @@ void LedControl::setLed(int addr, int row, int column, boolean state) {
     spiTransfer(addr, row+1,status[offset+row]);
 }
 
-/*void LedControl::setRow(int addr, int row, byte value) {
+void LedControl::setRow(int addr, int row, byte value) {
     int offset;
     if(addr<0 || addr>=maxDevices)
         return;
@@ -152,43 +137,6 @@ void LedControl::setColumn(int addr, int col, byte value) {
     }
 }
 
-void LedControl::setDigit(int addr, int digit, byte value, boolean dp) {
-    int offset;
-    byte v;
-
-    if(addr<0 || addr>=maxDevices)
-        return;
-    if(digit<0 || digit>7 || value>15)
-        return;
-    offset=addr*8;
-    v=pgm_read_byte_near(charTable + value); 
-    if(dp)
-        v|=B10000000;
-    status[offset+digit]=v;
-    spiTransfer(addr, digit+1,v);
-}
-
-void LedControl::setChar(int addr, int digit, char value, boolean dp) {
-    int offset;
-    byte index,v;
-
-    if(addr<0 || addr>=maxDevices)
-        return;
-    if(digit<0 || digit>7)
-        return;
-    offset=addr*8;
-    index=(byte)value;
-    if(index >127) {
-        //no defined beyond index 127, so we use the space char
-        index=32;
-    }
-    v=pgm_read_byte_near(charTable + index); 
-    if(dp)
-        v|=B10000000;
-    status[offset+digit]=v;
-    spiTransfer(addr, digit+1,v);
-}*/
-
 void LedControl::spiTransfer(int addr, volatile byte opcode, volatile byte data) {
     //Create an array with the data to shift out
     int offset=addr*2;
@@ -202,15 +150,15 @@ void LedControl::spiTransfer(int addr, volatile byte opcode, volatile byte data)
     //Now shift out the data 
     digitalWrite(SPI_CS, LOW);
     for(int i=maxbytes;i>0;i--)
-        shiftOut(SPI_MOSI,SPI_CLK,spidata[i-1]);
+        shiftOut(spidata[i-1]);
     digitalWrite(SPI_CS, HIGH);
-}    
+}
 
-void shiftOut(int pin, int clk, byte data) {
+void LedControl::shiftOut(byte data) {
     for(int i = 0; i < 8; i++) {
-        digitalWrite(pin, data & 0x80);
-        digitalWrite(clk, HIGH);
+        digitalWrite(SPI_MOSI, data & 0x80);
+        digitalWrite(SPI_CLK, HIGH);
         data <<= 1;
-        digitalWrite(clk, LOW);
+        digitalWrite(SPI_CLK, LOW);
     }
 }
