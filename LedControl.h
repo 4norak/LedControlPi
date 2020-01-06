@@ -84,11 +84,6 @@ class LedControl {
         LedControl(int dataPin, int clkPin, int csPin, int numDevices=1);
 
         /*
-         * Delete the controller and clear up
-         */
-        ~LedControl();
-
-        /*
          * Gets the number of devices attached to this LedControl.
          * Returns :
          * int	the number of devices on this LedControl
