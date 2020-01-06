@@ -8,7 +8,7 @@ int main(void)
     for(int j=0; j<8; j++)
         display.shutdown(i, true);
     for(int j=0; j<8; j++)
-        display.shutdown(i, true);
+        display.shutdown(i, false);
     display.setCharacter(0, '3');
     display.setCharacter(1, '6');
     display.setCharacter(2, '7');
