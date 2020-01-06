@@ -138,10 +138,10 @@ void LedControl::setColumn(int addr, int col, byte value) {
 }
 
 void LedControl::setCharacter(int addr, char character) {
-    byte charMap[8] = digits[character-'0'];
+    const byte *charMap = digits[character-'0'];
     //TODO: Check character range
     for(int row=0; row<8; row++)
-        LedControl::setRow(addr, row, charMap[i]);
+        LedControl::setRow(addr, row, charMap[row]);
 }
 
 void LedControl::spiTransfer(int addr, volatile byte opcode, volatile byte data) {
