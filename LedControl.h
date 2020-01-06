@@ -60,8 +60,6 @@ class LedControl {
         void spiTransfer(int addr, byte opcode, byte data);
         /* Replacement for the Arduino-function */
         void shiftOut(byte data);
-        /*Clean up on Ctrl+C*/
-        void cleanUp();
 
         /* We keep track of the led-status for all 8 devices in this array */
         byte status[MAX_DEVICES * 8];
@@ -169,6 +167,9 @@ class LedControl {
          * character the caracter to be displayed
          */
         void setCharacter(int addr, char character);
+
+        /*Clean up on Ctrl+C or SIGTERM*/
+        void cleanUp();
 };
 
 
