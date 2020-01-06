@@ -16,14 +16,11 @@ int main(void)
     signal(SIGINT, handleSig);
     signal(SIGTERM, handleSig);
     while(!shutdown)
-        for(int i=0;i<10;i++) {
-            for(int j=0; j<8; j++)
-                display.setCharacter(j, i);
+        for(char i=48;i<58;i++) {
+            display.setCharacter(0, i);
             delay(980);
-            for(int j=0; j<8; j++) {
-                display.clearDisplay(j);
-                delay(20);
-            }
+            display.clearDisplay(0);
+            delay(20);
         }
 
     return 0;
