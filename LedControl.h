@@ -27,7 +27,7 @@
 #ifndef LedControl_h
 #define LedControl_h
 
-#include <wiringPi.h>
+#include <Arduino.h>
 
 typedef char byte;
 
@@ -59,7 +59,7 @@ class LedControl {
         /* Send out a single command to the device */
         void spiTransfer(int addr, byte opcode, byte data);
         /* Replacement for the Arduino-function */
-        void shiftOut(byte data);
+        //void shiftOut(byte data);
 
         /* We keep track of the led-status for all 8 devices in this array */
         byte status[MAX_DEVICES * 8];

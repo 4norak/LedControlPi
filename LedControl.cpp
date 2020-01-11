@@ -161,14 +161,14 @@ void LedControl::spiTransfer(int addr, volatile byte opcode, volatile byte data)
     digitalWrite(SPI_CS, HIGH);
 }
 
-void LedControl::shiftOut(byte data) {
+/*void LedControl::shiftOut(byte data) {
     for(int i = 0; i < 8; i++) {
         digitalWrite(SPI_MOSI, data & 0x80);
         digitalWrite(SPI_CLK, HIGH);
         data <<= 1;
         digitalWrite(SPI_CLK, LOW);
     }
-}
+}*/
 
 void LedControl::cleanUp() {
     digitalWrite(SPI_CS, HIGH);
